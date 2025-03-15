@@ -1,6 +1,3 @@
-Voici une **version améliorée** du README intégrant des **informations dédiées** à l’équipe qui va développer le **backend de l’application mobile** et qui a besoin de **détails sur les endpoints** et leurs **paramètres**. 
-
-Tu peux l’intégrer dans ton `README.md` pour qu’ils comprennent **comment communiquer** avec le microservice IA et **quelles données** envoyer ou recevoir.  
 
 ---
 
