@@ -1,0 +1,15 @@
+# Fichiers de cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Cache Pytest
+.pytest_cache/
+
+# Données fictives
+app/data/simulated_data.json
+
+# Environnement virtuel
+venv/
+.env
