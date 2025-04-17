@@ -1,33 +1,71 @@
-import random
-from app.config import PRIX_MIN, PRIX_MAX
+import datetime
+from ..config import (
+    COUT_PAR_KM, COUT_PAR_MINUTE,
+    PLANCHER, PLAFOND,
+    MULT_CREUSE, MULT_STD, MULT_POINTE,
+    AJUST_OFFRE_FORTE, AJUST_OFFRE_FAIBLE
+)
 
-class MultiArmedBandit:
+# Un "bandit state" simpliste
+BANDIT_STATE = {
+    "acceptance_rate": 0.5
+}
+
+def get_current_tranche() -> float:
+    now_h = datetime.datetime.now().hour
+    if 0 <= now_h < 8:
+        return MULT_CREUSE
+    elif 8 <= now_h < 18:
+        return MULT_STD
+    else:
+        return MULT_POINTE
+
+def get_offre_demande_adjustment():
+    rate = BANDIT_STATE["acceptance_rate"]
+    if rate > 0.7:
+        return AJUST_OFFRE_FORTE
+    elif rate < 0.3:
+        return AJUST_OFFRE_FAIBLE
+    else:
+        return 0.0
+
+def calculate_price_for_crowdshipper(
+    dist_fixed: float, time_fixed: float,
+    dist_var: float, time_var: float,
+    taille: str
+) -> float:
     """
-    Implémentation simplifiée d'un bandit manchot pour tarification dynamique.
+    dist_fixed/time_fixed = partie relais->destination
+    dist_var/time_var = partie crowd->relais
+    On additionne le coût, puis on applique les multiplicateurs, etc.
     """
-    def __init__(self, prix_min=PRIX_MIN, prix_max=PRIX_MAX):
-        self.prix_min = prix_min
-        self.prix_max = prix_max
-        self.historique = {}
+    # partie fixe
+    base_fixed = (dist_fixed * COUT_PAR_KM) + (time_fixed * COUT_PAR_MINUTE)
+    # partie variable
+    base_var = (dist_var * COUT_PAR_KM) + (time_var * COUT_PAR_MINUTE)
+    cost = base_fixed + base_var
 
-    def choisir_prix(self, id_livraison: int) -> float:
-        """
-        Choisit un prix initial ou en cours pour la livraison donnée.
-        """
-        if id_livraison not in self.historique:
-            self.historique[id_livraison] = random.uniform(self.prix_min, self.prix_max)
-        return self.historique[id_livraison]
+    # horaire
+    cost *= get_current_tranche()
 
-    def mettre_a_jour(self, id_livraison: int, accepte: bool):
-        """
-        Met à jour le tarif en fonction de l'acceptation ou du refus.
-        Stratégie très simplifiée : on diminue si accepté, on augmente si refusé.
-        """
-        if id_livraison in self.historique:
-            if accepte:
-                self.historique[id_livraison] *= 0.95
-            else:
-                self.historique[id_livraison] *= 1.05
+    # offre/demande
+    cost *= (1 + get_offre_demande_adjustment())
 
-# Instance globale
-bandit = MultiArmedBandit()
+    # ajuster selon taille
+    if taille in ["XL","XXL"]:
+        cost *= 1.10
+    elif taille == "XS":
+        cost *= 0.95
+
+    # clamp
+    cost = max(PLANCHER, min(PLAFOND, cost))
+    return round(cost, 2)
+
+def update_price_logic(id_livraison: int, accepte: bool):
+    """
+    Mise à jour bandit (acceptance_rate).
+    """
+    if accepte:
+        BANDIT_STATE["acceptance_rate"] = min(1.0, BANDIT_STATE["acceptance_rate"] + 0.05)
+    else:
+        BANDIT_STATE["acceptance_rate"] = max(0.0, BANDIT_STATE["acceptance_rate"] - 0.05)

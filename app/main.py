@@ -1,23 +1,22 @@
 from fastapi import FastAPI
-from app.routers import pricing, dispatch
+from .routers import delivery, dispatch, pricing
+from .database import engine
+from .models.db_models import Base
 
-
-# Routers (endpoints)
-from .routers import pricing, dispatch
+# Crée les tables si pas existantes
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="Module IA - Crowdshipping",
-    description="Tarification dynamique et dispatching intelligent pour crowdshipping",
+    title="IASERVICE Crowdshipping",
+    description="Microservice IA pour la tarification et le dispatch.",
     version="1.0.0"
 )
 
-# Inclure les routers
-app.include_router(pricing.router, prefix="/pricing", tags=["pricing"])
-app.include_router(dispatch.router, prefix="/dispatch", tags=["dispatch"])
+# Inclusion des routes
+app.include_router(delivery.router, prefix="/delivery", tags=["Delivery"])
+app.include_router(dispatch.router, prefix="/dispatch", tags=["Dispatch"])
+app.include_router(pricing.router, prefix="/pricing", tags=["Pricing"])
 
 @app.get("/")
-def root():
-    return {"message": "Bienvenue dans le Module IA de Crowdshipping !"}
-
-if __name__ == "__main__":
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+def read_root():
+    return {"message": "IASERVICE is running. Check /docs."}
