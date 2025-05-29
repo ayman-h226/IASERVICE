@@ -1,0 +1,90 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+.cache
+.nox/
+
+# MyPy cache
+.mypy_cache/
+
+# Pylint cache
+.pylint.d/
+
+# Rope project settings
+.ropeproject/
+
+# Logs and databases
+*.log
+*.sqlite3
+*.db
+*.db-journal
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Mac-specific
+.AppleDouble
+.LSOverride
+
+# Node modules (if any front‑end)
+node_modules/
+
+# JetBrains
+out/
+.idea/
+
+# Coverage / reports
+coverage.xml
+
+# VS Code extension folders
+.history/
+
+# Sphinx documentation build
+docs/_build/
+
+# Editor backups
+*~

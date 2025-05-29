@@ -1,6 +1,7 @@
-# Dockerfile minimal pour le module IA
-
 FROM python:3.9-slim
+
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
 # Créer un répertoire de travail
 WORKDIR /app
