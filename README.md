@@ -1,7 +1,7 @@
 
 ---
 
-# IASERVICE – Crowdshipping IA Module (Version Mise à Jour)
+# IASERVICE – Crowdshipping IA Module
 
 Ce projet fournit un **microservice IA** en Python avec FastAPI pour une application de **crowdshipping**, permettant de :
 1.  **Enrichir** les informations d'une livraison avec la distance et le temps de trajet estimés.
@@ -91,10 +91,8 @@ IASERVICE/
 │       └── price_service.py  # Calcul des prix, gestion du bandit manchot
 ├── docker/
 │   └── Dockerfile            # Configuration pour la conteneurisation
-├── scripts/
-│   └── clean_tests.py        # (ou clean_cache.py) Script de nettoyage
 ├── .env                      # Fichier pour les variables d'environnement (non versionné)
-├── .gitignore
+├── .gitignore                # Fichiers à ignorer par Git
 ├── requirements.txt          # Dépendances Python
 └── README.md                 # Cette documentation
 ```
@@ -193,7 +191,7 @@ Ces valeurs sont chargées par `app/config.py`.
 ### 7.2. Installation
 1.  Clonez le dépôt :
     ```bash
-    git clone <URL_DU_REPO>
+    git clone https://github.com/ayman-h226/IASERVICE.git
     cd IASERVICE
     ```
 2.  Créez un environnement virtuel et activez-le :
