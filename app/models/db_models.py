@@ -1,4 +1,7 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean
+# app/models/db_models.py
+
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -20,3 +23,10 @@ class Crowdshipper(Base):
     position_gps = Column(String, nullable=False)     # "48.8566,2.3522"
     capacite_taille = Column(String, nullable=False)  # "XS","S","M","L","XL"
     disponible = Column(Boolean, default=True)
+
+# MODÈLE POUR LE BANDIT
+class BanditState(Base):
+    __tablename__ = "ia_bandit_state"
+
+    state_key = Column(String, primary_key=True, index=True) # ex: "global_acceptance_rate"
+    state_value = Column(Float, nullable=False)

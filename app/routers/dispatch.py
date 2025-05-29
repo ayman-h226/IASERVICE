@@ -1,33 +1,40 @@
+# app/routers/dispatch.py
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from ..database import get_db
-from ..models import db_models, schemas
+from ..models import db_models, schemas # db_models pour les requêtes directes
 from ..services.dispatch_service import filter_crowdshippers, propose_prices
 
 router = APIRouter()
 
 @router.post("/assign", response_model=schemas.DispatchResponse)
 def assign_livraison(req: schemas.DispatchRequest, db: Session = Depends(get_db)):
-    # On récupère la livraison en DB
     delivery = db.query(db_models.Delivery).filter(db_models.Delivery.id == req.id_livraison).first()
     if not delivery:
         raise HTTPException(status_code=404, detail="Delivery not found")
 
-    # Filtrer crowdshippers
-    crowdshippers = db.query(db_models.Crowdshipper).all()
-    # renvoie la liste des IDs
-    assignment = filter_crowdshippers(delivery, crowdshippers)
+    # Récupérer tous les crowdshippers (à optimiser si la liste est énorme)
+    # Potentiellement, Spring pourrait fournir une liste pré-filtrée de crowdshippers
+    # ou des critères pour un filtre DB plus fin ici.
+    all_crowdshippers = db.query(db_models.Crowdshipper).all() 
+    
+    # filter_crowdshippers a maintenant besoin de db
+    assignment = filter_crowdshippers(delivery, all_crowdshippers, db=db) 
     return schemas.DispatchResponse(assignment=assignment)
 
-@router.post("/propose")
+
+@router.post("/propose", response_model=schemas.ProposeResponse) # Ajout du response_model
 def propose_tarifs(req: schemas.DispatchRequest, db: Session = Depends(get_db)):
-    # On récupère la livraison
     delivery = db.query(db_models.Delivery).filter(db_models.Delivery.id == req.id_livraison).first()
     if not delivery:
         raise HTTPException(status_code=404, detail="Delivery not found")
 
-    # crowdshippers
-    crowdshippers = db.query(db_models.Crowdshipper).all()
+    # Idem que pour /assign, récupérer les crowdshippers
+    all_crowdshippers = db.query(db_models.Crowdshipper).all()
 
-    proposals = propose_prices(delivery, crowdshippers)
-    return proposals  # renvoie un dict du type { "proposals": {"101": 15.2, "102": 13.4} }
+    # propose_prices a maintenant besoin de db
+    proposals = propose_prices(delivery, all_crowdshippers, db=db)
+    # La fonction propose_prices retourne déjà un ProposeResponse, donc pas besoin de re-wrapper.
+    return proposals
