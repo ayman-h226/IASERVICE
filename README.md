@@ -313,6 +313,7 @@ Un `Dockerfile` est fourni pour faciliter la conteneurisation de l'application.
 
 ## 11. Pistes d'Améliorations Futures
 
+
 *   **Tests Automatisés Robustes :** Réintroduire et développer des tests unitaires et d'intégration avec Pytest, utilisant une base de données de test et des mocks pour les API externes.
 *   **Sécurité Renforcée :** Implémenter une authentification solide pour les API (ex: OAuth2, API Key via headers sécurisés).
 *   **Cache pour Google Maps :** Mettre en place un cache (ex: Redis) pour les résultats de l'API Google Maps afin de réduire les coûts et la latence.
@@ -322,3 +323,4 @@ Un `Dockerfile` est fourni pour faciliter la conteneurisation de l'application.
 *   **Monitoring et Observabilité :** Intégrer des outils comme Prometheus et Grafana pour suivre les métriques de performance, les taux d'erreur, et l'efficacité du bandit.
 
 ---
+
